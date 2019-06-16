@@ -1,0 +1,23 @@
+#!/usr/bin/env node
+
+'use strict';
+
+const net = require('net');
+const packet = JSON.stringify({
+  command: process.argv[2],
+  args: process.argv.slice(3, process.argv.length)
+});
+
+const client = new net.Socket();
+client.connect(1337, '127.0.0.1', function() {
+  client.write(packet);
+});
+
+client.on('data', function(data) {
+  console.log(JSON.parse(data));
+  client.destroy(); // kill client after server's response
+});
+
+client.on('close', function() {
+  // do something on close
+});

@@ -1,0 +1,63 @@
+#!/usr/bin/env node
+
+'use strict';
+
+const Channel = require("../lnb/channel");
+const Net = require('net');
+const port = 1337;
+
+const server = new Net.Server();
+
+
+server.listen(port, function() {
+  console.log(`Server listening for connection requests on socket localhost:${port}`);
+});
+
+server.on('connection', function(socket) {
+
+  function send(data) {
+    socket.write(JSON.stringify(data));
+  }
+
+  socket.on('data', function(chunk) {
+
+    const data = JSON.parse(chunk);
+    console.log(`received: "${data.command}"`);
+
+
+    switch (data.command) {
+      case "ping":
+        console.log('sending: "pong"')
+        send("pong")
+        break;
+      case "open-channel":
+        openChannel(data.args).then((fundingTX) => {
+          send(fundingTX)
+        })
+        break;
+      default:
+        send("command not found");
+        break;
+    }
+
+  });
+
+  socket.on('error', function(err) {
+    console.log(`Error: ${err}`);
+  });
+});
+
+
+
+//####################################
+//####### COMMAND FUNCTIONS #########
+//####################################
+
+async function openChannel(args) {
+  const channel = new Channel({
+    publicKey: args[0],
+    satoshis: parseInt(args[1]),
+  })
+  const fundingTX = await channel.fundChannel();
+  return fundingTX;
+}
