@@ -11,13 +11,13 @@ Run the Lnb Server:
 
 Interact with it using the Lnb-Client:
 --------------------------------------
-create a wallet:
+**create a wallet:**
 ```
 ./bin/lnb-cli create-wallet
 ```
 it will respond with your recovery mnemonic
 
-open a channel:
+**open a channel:**
 ```
 ./bin/lnb-cli open-channel [public key] [satoshis]
 ```
