@@ -3,7 +3,13 @@ Bcoin (Payment Channels)
 
 Mock Implementation of Payment Channels built on top of the Bcoin node. For learning purposes only, **not to be used on mainnet**.
 
-Run the Lnb Server:
+Run a Bcoin Node on regtest:
+----------------------------
+```
+./bin/bcoin --network=regtest
+```
+
+Run the Lnb Node:
 -------------------
 ```
 ./bin/lnb
