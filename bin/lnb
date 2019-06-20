@@ -3,6 +3,7 @@
 'use strict';
 
 const Channel = require("../lnb/channel");
+const { createWallet } = require("../lnb/wallet");
 const Net = require('net');
 const port = 1337;
 
@@ -24,12 +25,16 @@ server.on('connection', function(socket) {
     const data = JSON.parse(chunk);
     console.log(`received: "${data.command}"`);
 
-
     switch (data.command) {
       case "ping":
         console.log('sending: "pong"')
         send("pong")
         break;
+      case "create-wallet":
+        createWallet().then((mnemonic) => {
+          send('recovery mnemonic:' + '/n' + mnemonic)
+        });
+        break
       case "open-channel":
         openChannel(data.args).then((fundingTX) => {
           send(fundingTX)
@@ -54,10 +59,18 @@ server.on('connection', function(socket) {
 //####################################
 
 async function openChannel(args) {
-  const channel = new Channel({
-    publicKey: args[0],
-    satoshis: parseInt(args[1]),
-  })
-  const fundingTX = await channel.fundChannel();
-  return fundingTX;
+  try {
+    const channel = new Channel({
+      publicKey: args[0],
+      satoshis: parseInt(args[1]),
+    })
+    const fundingTX = await channel.fundChannel();
+    return fundingTX;
+  } catch(err) {
+    if (err == "NO_WALLET") {
+      return 'No Wallet. Please create a wallet: "lnb-cli create-wallet"'
+    } else {
+      throw(err)
+    }
+  }
 }

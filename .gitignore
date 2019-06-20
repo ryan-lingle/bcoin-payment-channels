@@ -7,3 +7,4 @@ npm-debug.log
 coverage/
 yarn.lock
 webpack.*.js
+bin/test
