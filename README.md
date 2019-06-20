@@ -1,7 +1,7 @@
 Bcoin (Payment Channels)
 ========================
 
-Mock Implementation of Payment Channels built on top of the Bcoin node. For learning purposes only, not to be used on mainnet.
+Mock Implementation of Payment Channels built on top of the Bcoin node. For learning purposes only, **not to be used on mainnet**.
 
 Run the Lnb Server:
 -------------------
